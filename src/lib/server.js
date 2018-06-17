@@ -11,6 +11,10 @@ import { configureContainer } from './container'
 import { notFoundHandler } from '../middleware/not-found'
 import { errorHandler } from '../middleware/error-handler'
 
+const app = new Koa()
+// Container is configured with our services and whatnot.
+export const container = (app.container = configureContainer())
+
 /**
  * Creates and returns a new Koa application.
  * Does *NOT* call `listen`!
@@ -19,10 +23,6 @@ import { errorHandler } from '../middleware/error-handler'
  */
 export async function createServer() {
   logger.debug('Creating server...')
-  const app = new Koa()
-
-  // Container is configured with our services and whatnot.
-  const container = (app.container = configureContainer())
   app
     // Top middleware is the error handler.
     .use(errorHandler)

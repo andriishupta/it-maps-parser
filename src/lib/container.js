@@ -6,12 +6,13 @@ import { logger } from './logger'
  * will be loaded.
  */
 const modulesToLoad = [
-  // Services should be scoped to the request.
-  // This means that each request gets a separate instance
-  // of a service.
-  ['services/*.js', Lifetime.SCOPED],
-  // Stores will be singleton (1 instance per process).
-  // This is just for demo purposes, you can do whatever you want.
+  ['lib/scratcher.js', Lifetime.TRANSIENT],
+
+  ['services/company-service.js', Lifetime.SCOPED],
+  ['services/geocoding-service.js', Lifetime.SINGLETON],
+  ['services/parser-service.js', Lifetime.SINGLETON],
+  ['services/company-repository.js', Lifetime.SINGLETON],
+
   ['stores/*.js', Lifetime.SINGLETON]
 ]
 

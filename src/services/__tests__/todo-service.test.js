@@ -1,5 +1,5 @@
 import { throws } from 'smid'
-import TodoService from '../todo-service'
+import CompanyService from '../company-service'
 
 // This test only verify invariants, not interaction with dependencies.
 // That is tested with integration tests.
@@ -81,5 +81,5 @@ function setup() {
     update: jest.fn(async (id, data) => ({ ...data })),
     remove: jest.fn(async id => undefined)
   }
-  return { service: new TodoService(store), store, todos }
+  return { service: new CompanyService(store), store, todos }
 }
