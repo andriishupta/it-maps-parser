@@ -24,7 +24,7 @@ export default class CompanyService {
   async create(data) {
     BadRequest.assert(data, 'No company payload given')
     BadRequest.assert(data.name, 'name is required')
-    BadRequest.assert(data.href, 'href is required')
+    BadRequest.assert(data.url, 'url is required')
 
     return this.companyStore.create(data)
   }
