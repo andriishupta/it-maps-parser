@@ -1,7 +1,5 @@
 import Company from './models/company'
 
-import { assign } from 'lodash'
-
 export default class CompanyStore {
   constructor(logger) {
     this.logger = logger
@@ -41,9 +39,16 @@ export default class CompanyStore {
 
   async update(id, data) {
     this.logger.debug(`Update company: `, id)
-    const company = await this.get(id)
-    assign(company, data)
-    return company.save()
+    return new Promise((resolve, reject) => {
+      Company.update({ _id: id }, { $set: data }, (err, result) => {
+        if (err) {
+          this.logger.error(`Error with update`)
+          throw Error(err)
+        }
+        this.logger.debug(`Updated`)
+        resolve(true)
+      })
+    })
   }
 
   async remove(id) {

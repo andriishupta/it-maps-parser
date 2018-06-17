@@ -36,6 +36,10 @@ export default class CompanyRepository {
     return env.SCRATCHER.GET_URL
   }
 
+  get locationPath() {
+    return env.SCRATCHER.LOCATION_PATH
+  }
+
   get apiUrl() {
     return env.SCRATCHER.API_URL
   }
@@ -59,7 +63,7 @@ export default class CompanyRepository {
       scope: `CompanyRepository.setup`
     })
     if (this.headers && this.csrfmiddlewaretoken) {
-      this.logger.error(`skipping...`)
+      this.logger.debug(`skipping setup...`)
       return true
     }
 
@@ -102,6 +106,23 @@ export default class CompanyRepository {
       return ParserService.getCompanies(data.html)
     } catch (e) {
       this.logger.error(`Cannot fetch companies ${e}`)
+      throw new Error(e)
+    }
+  }
+
+  async fetchCompanyLocation(company) {
+    await this.setup()
+
+    this.logger.debug(`Fetching locations...`, {
+      scope: `CompanyRepository.fetchCompanyLocation`
+    })
+
+    try {
+      this.logger.debug(`Fetching location page...`)
+      const { data } = await axios.get(company.url + this.locationPath)
+      return ParserService.getLocationQuery(data, this.cities[0])
+    } catch (e) {
+      this.logger.error(`Cannot fetch location page ${e}`)
       throw new Error(e)
     }
   }

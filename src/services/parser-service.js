@@ -25,4 +25,10 @@ export default class ParserService {
 
     return companies
   }
+
+  static getLocationQuery(html, city) {
+    const doc = ParserService.parse(html)
+    const byCity = doc.querySelector(`#${city}`).parentElement
+    return byCity.querySelector('.address a').href
+  }
 }

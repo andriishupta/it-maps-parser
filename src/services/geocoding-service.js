@@ -11,14 +11,17 @@ export default class GeocodingService {
   }
 
   async getCoords(address) {
+    this.logger.debug(`Getting location: ${address}`, {
+      scope: 'Geocoding.getCoords'
+    })
     try {
-      const geo = await axios.get(this.apiUrl + address)
-      const location = geo.results[0].geometry.location
+      const { data } = await axios.get(this.apiUrl + address)
+      const location = data.results[0].geometry.location
       this.logger.debug(`Got location for: ${address}`)
 
       return location
     } catch (e) {
-      this.logger.debug(`Error with location for: ${address}`)
+      this.logger.debug(`Geocoding.getCoords error: ${e}`)
       return {}
     }
   }

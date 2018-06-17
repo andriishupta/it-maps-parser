@@ -1,6 +1,7 @@
 export default class Scratcher {
-  constructor(companyRepository, companyStore, logger) {
+  constructor(companyRepository, companyStore, geocodingService, logger) {
     this.companyRepository = companyRepository
+    this.geocodingService = geocodingService
     this.companyStore = companyStore
     this.logger = logger
   }
@@ -13,6 +14,26 @@ export default class Scratcher {
 
     if (this.companyRepository.maxCount === this.companyRepository.fetched) {
       this.logger.debug(`Fetched and saved all requested companies`)
+      this.logger.debug(`Getting locations ...`)
+
+      const companies = await this.companyStore.find()
+      companies.forEach((company, index) => {
+        setTimeout(async () => {
+          try {
+            const locationQuery = await this.companyRepository.fetchCompanyLocation(
+              company
+            )
+            const location = await this.geocodingService.getCoords(
+              locationQuery
+            )
+            location.q = locationQuery
+            await this.companyStore.update(company._id, { location })
+          } catch (e) {
+            this.logger.error(`Error with location for: `, company.name)
+            this.logger.debug(`... skipping`)
+          }
+        }, index * 1000)
+      })
     } else {
       return this.run()
     }
