@@ -84,7 +84,7 @@ export default class CompanyRepository {
     }
   }
 
-  async fetchCompanies() {
+  async fetchCompanies(city) {
     await this.setup()
 
     this.logger.debug(`Fetching companies...`, {
@@ -100,7 +100,7 @@ export default class CompanyRepository {
       this.logger.debug(`Fetching companies...`, {
         scope: `CompanyRepository.fetchCompanies`
       })
-      const { data } = await axios.post(this.apiUrl + this.cities[0], body, {
+      const { data } = await axios.post(this.apiUrl + city, body, {
         headers: this.headers
       })
       return ParserService.getCompanies(data.html)
@@ -110,7 +110,7 @@ export default class CompanyRepository {
     }
   }
 
-  async fetchCompanyLocation(company) {
+  async fetchCompanyLocation(company, city) {
     await this.setup()
 
     this.logger.debug(`Fetching locations...`, {
@@ -120,7 +120,7 @@ export default class CompanyRepository {
     try {
       this.logger.debug(`Fetching location page...`)
       const { data } = await axios.get(company.url + this.locationPath)
-      return ParserService.getLocationQuery(data, this.cities[0])
+      return ParserService.getLocationQuery(data, city)
     } catch (e) {
       this.logger.error(`Cannot fetch location page ${e}`)
       throw new Error(e)

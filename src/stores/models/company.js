@@ -7,6 +7,7 @@ const companySchema = new Schema({
   url: { type: String, required: true, unique: true },
   location: {
     q: String,
+    city: String,
     lat: { type: Number, required: true },
     lng: { type: Number, required: true }
   }
